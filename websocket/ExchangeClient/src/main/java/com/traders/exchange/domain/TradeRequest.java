@@ -1,10 +1,7 @@
 // com.traders.exchange.domain.TradeRequest
 package com.traders.exchange.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Builder;
-
-import java.io.Serializable;
 
 @Builder
 public record TradeRequest(

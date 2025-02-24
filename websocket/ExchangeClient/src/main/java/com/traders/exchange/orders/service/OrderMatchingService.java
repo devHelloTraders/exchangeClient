@@ -70,22 +70,20 @@ public class OrderMatchingService implements OrderMatchingPort {
     private void processOrderTask(OrderTask task) {
         TransactionCommand command = task.command;
         switch (command) {
-            case TransactionCommand.PlaceBuy(var req, var id) -> {
+            case TransactionCommand.PlaceBuy(var req) -> {
                 try {
-                    req.orderCategory().validateTradeRequest(req);
-                    TradeResponse trade = TradeResponse.builder().request(req).transactionId(id).build();
-                    placeOrder(trade, true);
-                    req.orderCategory().postProcessOrder(this, List.of(id), req); // Pass this instance
+                    req.request().orderCategory().validateTradeRequest(req.request());
+                    placeOrder(req, true);
+                    req.request().orderCategory().postProcessOrder(this, req); // Pass this instance
                 } catch (IllegalArgumentException e) {
                     logger.warn("Invalid buy order request: {}", e.getMessage());
                 }
             }
-            case TransactionCommand.PlaceSell(var req, var id) -> {
+            case TransactionCommand.PlaceSell(var req) -> {
                 try {
-                    req.orderCategory().validateTradeRequest(req);
-                    TradeResponse trade = TradeResponse.builder().request(req).transactionId(id).build();
-                    placeOrder(trade, false);
-                    req.orderCategory().postProcessOrder(this, List.of(id), req); // Pass this instance
+                    req.request().orderCategory().validateTradeRequest(req.request());
+                    placeOrder(req, false);
+                    req.request().orderCategory().postProcessOrder(this, req); // Pass this instance
                 } catch (IllegalArgumentException e) {
                     logger.warn("Invalid sell order request: {}", e.getMessage());
                 }
@@ -152,7 +150,7 @@ public class OrderMatchingService implements OrderMatchingPort {
 
     private void placeOrder(TradeResponse order, boolean isBuy) {
         if (loadedTransactionIds.contains(order.transactionId())) return;
-        String stockSymbol = order.request().stockId().toString();
+        String stockSymbol = order.instrumentId();
         Map<String, ConcurrentSkipListSet<TradeResponse>> queues = isBuy ? buyOrderQueues : sellOrderQueues;
         Comparator<TradeResponse> comparator = isBuy
             ? Comparator.comparingDouble(TradeResponse::getAskedPrice)

@@ -28,14 +28,8 @@ public enum OrderCategory {
         }
 
         @Override
-        public void postProcessOrder(OrderMatchingService service, List<Long> transactionIds, TradeRequest request) {
-            transactionIds.forEach(transactionId -> {
-                TradeResponse response = TradeResponse.builder()
-                    .transactionId(transactionId)
-                    .request(request)
-                    .build();
-                service.placeBuyOrder(response);
-            });
+        public void postProcessOrder(OrderMatchingService service, TradeResponse tradeResponse) {
+            service.placeBuyOrder(tradeResponse);
         }
     },
     BRACKET_AT_MARKET {
@@ -65,21 +59,15 @@ public enum OrderCategory {
         }
 
         @Override
-        public void postProcessOrder(OrderMatchingService service, List<Long> transactionIds, TradeRequest request) {
-            transactionIds.forEach(transactionId -> {
-                TradeResponse response = TradeResponse.builder()
-                    .transactionId(transactionId)
-                    .request(request)
-                    .build();
-                service.placeSellOrder(response);
-            });
+        public void postProcessOrder(OrderMatchingService service, TradeResponse tradeResponse) {
+            service.placeSellOrder(tradeResponse);
         }
     };
 
     public abstract boolean validateTradeRequest(TradeRequest tradeRequest);
 
     // Updated to take OrderMatchingService as a parameter instead of SpringContextUtil
-    public void postProcessOrder(OrderMatchingService service, List<Long> transactionIds, TradeRequest request) {
+    public void postProcessOrder(OrderMatchingService service, TradeResponse response) {
         // Default implementation does nothing
     }
 

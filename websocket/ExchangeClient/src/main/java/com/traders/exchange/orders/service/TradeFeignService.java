@@ -1,5 +1,6 @@
 package com.traders.exchange.orders.service;
 
+import com.traders.common.model.TradeOrderDetails;
 import com.traders.exchange.config.FeignConfig;
 import com.traders.exchange.domain.TradeRequest;
 import com.traders.exchange.domain.TransactionUpdateRecord;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface TradeFeignService {
 
     @PostMapping("/api/portfolio/transactions/addTxn")
-    List<Long> addTradeTransaction(@RequestBody TradeRequest tradeRequest);
+    List<TradeOrderDetails> addTradeTransaction(@RequestBody TradeRequest tradeRequest);
 
     @PostMapping("/api/portfolio/transactions/update")
     void updateTradeTransaction(@RequestBody TransactionUpdateRecord updateRecord);

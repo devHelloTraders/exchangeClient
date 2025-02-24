@@ -6,7 +6,8 @@ import lombok.Builder;
 @Builder
 public record TradeResponse(
     TradeRequest request,
-    Long transactionId
+    Long transactionId,
+    String instrumentId
 ) {
     public Double getAskedPrice() {
         return request.askedPrice();
