@@ -1,8 +1,8 @@
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-cache"
-    testImplementation "org.testcontainers:junit-jupiter"
-    testImplementation "org.testcontainers:testcontainers"
-    implementation libs.redisson
-    implementation "org.hibernate.orm:hibernate-jcache"
+    implementation "com.github.ben-manes.caffeine:caffeine"
+    implementation "com.github.ben-manes.caffeine:jcache"
+    implementation "javax.cache:cache-api"
+    implementation libs.config
     // jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }

@@ -1,7 +1,7 @@
 package com.mycompany.myapp;
 
 import com.mycompany.myapp.config.AsyncSyncConfiguration;
-import com.mycompany.myapp.config.EmbeddedRedis;
+import com.mycompany.myapp.config.EmbeddedSQL;
 import com.mycompany.myapp.config.JacksonConfiguration;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,6 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(classes = { WebsocketDemoApp.class, JacksonConfiguration.class, AsyncSyncConfiguration.class })
-@EmbeddedRedis
+@EmbeddedSQL
 public @interface IntegrationTest {
 }

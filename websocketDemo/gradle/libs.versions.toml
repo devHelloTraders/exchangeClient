@@ -1,4 +1,5 @@
 [versions]
+typesafe = "1.4.3"
 jacoco = "0.8.12"
 checkstyle = "10.18.1"
 # jhipster-needle-gradle-dependency-catalog-version - JHipster will add additional versions for convention plugins heref
@@ -7,7 +8,7 @@ checkstyle = "10.18.1"
 jhipster-framework = { module = "tech.jhipster:jhipster-framework", version = "8.7.1" }
 spring-cloud-dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version = "2023.0.3" }
 springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:springdoc-openapi-starter-webmvc-api", version = "2.6.0" }
-redisson = { module = "org.redisson:redisson", version = "3.36.0" }
+config = { module = "com.typesafe:config", version = "1.4.3" }
 # jhipster-needle-gradle-dependency-catalog-libraries - JHipster will add additional libraries versions
 
 [plugins]

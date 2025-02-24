@@ -12,6 +12,8 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -79,6 +81,16 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     }
 
     private ProblemDetailWithCause getProblemDetailWithCause(Throwable ex) {
+        if (
+            ex instanceof com.mycompany.myapp.service.UsernameAlreadyUsedException
+        ) return (ProblemDetailWithCause) new LoginAlreadyUsedException().getBody();
+        if (
+            ex instanceof com.mycompany.myapp.service.EmailAlreadyUsedException
+        ) return (ProblemDetailWithCause) new EmailAlreadyUsedException().getBody();
+        if (
+            ex instanceof com.mycompany.myapp.service.InvalidPasswordException
+        ) return (ProblemDetailWithCause) new InvalidPasswordException().getBody();
+
         if (
             ex instanceof ErrorResponseException exp && exp.getBody() instanceof ProblemDetailWithCause problemDetailWithCause
         ) return problemDetailWithCause;
@@ -175,6 +187,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     private String getMappedMessageKey(Throwable err) {
         if (err instanceof MethodArgumentNotValidException) {
             return ErrorConstants.ERR_VALIDATION;
+        } else if (err instanceof ConcurrencyFailureException || err.getCause() instanceof ConcurrencyFailureException) {
+            return ErrorConstants.ERR_CONCURRENCY_FAILURE;
         }
         return null;
     }
@@ -188,6 +202,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
         if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             if (err instanceof HttpMessageConversionException) return "Unable to convert http message";
+            if (err instanceof DataAccessException) return "Failure during data access";
             if (containsPackageName(err.getMessage())) return "Unexpected runtime exception";
         }
         return err.getCause() != null ? err.getCause().getMessage() : err.getMessage();
@@ -196,6 +211,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     private HttpStatus getMappedStatus(Throwable err) {
         // Where we disagree with Spring defaults
         if (err instanceof AccessDeniedException) return HttpStatus.FORBIDDEN;
+        if (err instanceof ConcurrencyFailureException) return HttpStatus.CONFLICT;
         if (err instanceof BadCredentialsException) return HttpStatus.UNAUTHORIZED;
         return null;
     }
